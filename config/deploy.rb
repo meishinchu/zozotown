@@ -16,6 +16,13 @@ set :unicorn_pid, -> { "#{shared_path}/tmp/pids/unicorn.pid" }
 set :unicorn_config_path, -> { "#{current_path}/config/unicorn.rb" }
 set :keep_releases, 5
 
+desc "Stop unicorn server gracefully"
+task stop: :environment do
+  on roles(:app) do
+    execute :kill, "-s QUIT $(< #{fetch(:unicorn_pid)})"
+  end
+end
+
 after 'deploy:publishing', 'deploy:restart'
 namespace :deploy do
   task :restart do
