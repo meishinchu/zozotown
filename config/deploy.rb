@@ -26,7 +26,9 @@ set :keep_releases, 5
 after 'deploy:publishing', 'deploy:restart'
 namespace :deploy do
   task :restart do
-    execute :kill, "-s QUIT $(< #{fetch(:unicorn_pid)})"
+    on roles(:app) do
+      execute :kill, "-s QUIT $(< #{fetch(:unicorn_pid)})"
+    end
     invoke 'unicorn:restart'
   end
 end
